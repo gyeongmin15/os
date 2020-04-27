@@ -22,17 +22,22 @@ int checked;
 
 int ans = INT_MAX;
 int prefix;
+int sub_result;
 
 // handler setting
 void
-handler2 (int sig) {
-    printf(" =>Current Best Solution: %d ,Checked Route: %d\n", ans,checked);
+handler2 (int sig) { 
+    printf(" =>Current Best Solution: %d , Checked Route: %d\n",ans,checked);
     exit(0);
 }
 
 void 
 handler (int sig) {
+    char buf[32];
     if(sig == SIGINT) {
+	sprintf(buf,"%d %d",sub_result,checked);
+	write(pipes[1], buf, strlen(buf)+1);
+	
 	exit(0);
     }
 }
@@ -109,25 +114,25 @@ child_process(int idx)
     close(pipes[0]);
     char buf[32];
     ssize_t s;
-
+   
     prefix = N-12;
 
     int j=0;
+    sub_result = 0;
     for(int i=0;i<prefix;i++) {
-	int sub_result = 0;
 	j = i+1+idx;
 	if(j>prefix) {
 	    j-=prefix;
 	}
 	sub_result += m[i][j];
 
-//	printf("sub_result check: %d\n",sub_result);
 	if(i==prefix-1) {
 	    sub_result += m[0][prefix];
-	    tsp(i+1,sub_result,1,i+1,i+13);
+	    tsp(i+1,0,1,i+1,i+13);
+//	    printf("lowcost: %d, sub result: %d\n",lowcost,sub_result);
 	    sub_result += lowcost;
-	    printf("Hello i'm child %d, my result is that  = %d\n",idx,sub_result);
-//	     printf("in child :%d\n",checked);
+	    printf("Hello I'm child, my result is that  = %d\n",sub_result);
+//	    printf("in child :%d\n",checked);
 
 	    sprintf(buf,"%d %d",sub_result,checked);
 
