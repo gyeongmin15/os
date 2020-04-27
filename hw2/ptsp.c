@@ -23,6 +23,7 @@ int checked;
 int ans = INT_MAX;
 int prefix;
 
+// handler setting
 void
 handler2 (int sig) {
     printf(" =>Current Best Solution: %d ,Checked Route: %d\n", ans,checked);
@@ -50,6 +51,7 @@ tsp(int num, int sum, int count, int start, int end) {
     city[count - 1] = num;
     if (count == end-start) {
 	for(int i=start;i<end;i++) {
+	    // comback
 	    if(i==end-1) {
 		sum += m[city[i-start]][city[0]];
 	    }
@@ -86,15 +88,15 @@ parent_process()
 	char *temp[2] = {NULL, };
 	int i = 0;
 	while(ptr!=NULL) {
-		temp[i] = ptr;
-		i++;
-		ptr = strtok(NULL, " ");
+	    temp[i] = ptr;
+	    i++;
+	    ptr = strtok(NULL, " ");
 	}
-	
+
 	ans = min(ans, atoi(temp[0]));
 	checked += atoi(temp[1]);
-	
-	//printf("in parents :%d\n",checked);
+
+//	printf("in parents :%d\n",checked);
     }
     close(pipes[0]);
 }
@@ -103,23 +105,29 @@ void
 child_process(int idx)
 {
     signal(SIGINT, handler);
-    
+
     close(pipes[0]);
     char buf[32];
     ssize_t s;
 
     prefix = N-12;
 
+    int j=0;
     for(int i=0;i<prefix;i++) {
 	int sub_result = 0;
-	sub_result += m[i][i+1];
+	j = i+1+idx;
+	if(j>prefix) {
+	    j-=prefix;
+	}
+	sub_result += m[i][j];
 
+//	printf("sub_result check: %d\n",sub_result);
 	if(i==prefix-1) {
+	    sub_result += m[0][prefix];
 	    tsp(i+1,sub_result,1,i+1,i+13);
-	   // printf("***low cost : %d, subresult : %d\n",lowcost, sub_result);
 	    sub_result += lowcost;
-	   // printf("sub+ lowcost = %d\n",sub_result);
-	   // printf("in child :%d\n",checked);
+	    printf("Hello i'm child %d, my result is that  = %d\n",idx,sub_result);
+//	     printf("in child :%d\n",checked);
 
 	    sprintf(buf,"%d %d",sub_result,checked);
 
@@ -127,8 +135,6 @@ child_process(int idx)
 	}
     }
 
-
-    lowcost = INT_MAX;
     close(pipes[1]);
     exit(0);
 }
@@ -154,7 +160,7 @@ main(int argc, char* argv[]){
     FILE* fp = fopen(argv[1],"r");
     int t;
     pid_t child_pid[12];
-    
+
     // Get N
     char* str = find_N(argv[1]);
     N = atoi(str);
