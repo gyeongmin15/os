@@ -53,7 +53,7 @@ remove_node(unsigned long id)
     for( i = 0 ; i < MAX ; i++) {
 	if(array_tid[i] == id)	return i;
     }
-    return -1;
+    return -1;	// the node does not exist
 }
     int
 remove_resource(int in_address)
@@ -63,7 +63,7 @@ remove_resource(int in_address)
     for( i = 0 ; i< MAX ; i++) {
 	if(address[i] == in_address) return i;
     }
-    return -1;
+    return -1;	// the resource does not exist
 }
     int
 dfs(int i, int *visited)
@@ -123,7 +123,7 @@ main (int argc, char * argv[])
 	printf("-->%d ", in_owner) ;
 
 	ptr = strtok(NULL," ") ;
-	in_address = strtoul(ptr, NULL, 16) ;
+	in_address = strtoul(ptr, NULL, 16) ;	// 16진수
 	printf("-->%d ", in_address);
 	
 
@@ -145,24 +145,14 @@ main (int argc, char * argv[])
 	    	printf("Bye\n");
 		exit(1);
 	    }
-	   //for(int k=0;k<10;k++){
-	//	printf("address[%d] = %d\n", k, address[k]);
-	  //	printf("array_tid[%d] = %ld\n", k , array_tid[k]); 
-	   //}
-	   
 	}
 	else if(strcmp(in_lock,"unlock") == 0 ) 
 	{
 	   int i = remove_node(in_thread_id) ;
 	   int j = remove_resource(in_address) + 10 ;
 	   if(i == -1 || j == 9) {
-	       // printf("해당 Edge를 찾을 수 없습니다\n") ;
 	       continue ;
 	   }
-	   //for(int k=0;k<10;k++){
-		//printf("address[%d] = %d\n", k, address[k]);
-	  //	printf("array_tid[%d] = %ld\n", k , array_tid[k]); 
-	   //}
 	   
 	   if(array[i][j]) {
 	   	printf("[%d, %d] Edge 삭제\n", i, j) ;
