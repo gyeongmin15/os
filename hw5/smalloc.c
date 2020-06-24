@@ -120,26 +120,6 @@ sfree (void * p)
 	itr = itr->prev ;
     }
 
-    //    if((int)itr->dsize >=  getpagesize()) {
-    //	printf("itr->dszie = %lu, int version = %d\n", itr->dsize, (int)itr->dsize);
-    //	int size = (int)itr->dsize - getpagesize() ;
-    //	
-    //	if(itr != sm_head.next) {
-    //		sm_container_split(itr, size) ;
-    //		itr->prev->next = itr->next ;
-    //		itr->next->prev = itr->prev ;
-    //		//itr->dsize -= (getpagesize());
-    //	}	
-    //
-    //	if(itr != sm_head.prev) {
-    //		sm_container_split(itr, size) ;
-    //		itr->next = itr->next->next ;
-    //		itr->next->next->prev = itr->next->prev ;
-    //		itr->dsize -= getpagesize() ;
-    //	}
-    //    }
-    //
-    //
 }
 
     void 
